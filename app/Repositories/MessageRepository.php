@@ -13,7 +13,7 @@ class MessageRepository
 
     public function get()
     {
-        return Message::latest()->paginate(10);
+        return Message::latest()->paginate(20);
     }
 
 }

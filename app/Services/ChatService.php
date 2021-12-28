@@ -20,8 +20,7 @@ class ChatService
 
     public function get()
     {
-        $messages = $this->messageRepository->get();
-        dd($messages);
+        $messages = $this->messageRepository->get()->items();
         foreach ($messages as $message)
         {
             $message['name'] = $message->user->name;

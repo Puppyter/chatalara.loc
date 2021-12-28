@@ -3,11 +3,11 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
+import InfiniteLoading from "vue-infinite-loading";
 require('./bootstrap');
 
 window.Vue = require('vue').default;
-
+Vue.use(InfiniteLoading, { /* options */ });
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -29,4 +29,5 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 
 const app = new Vue({
     el: '#app',
+    InfiniteLoading,
 });

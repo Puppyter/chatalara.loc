@@ -15,6 +15,12 @@ class ChatController extends Controller
         return response()->view('chat', ['messages'=>$messages]);
     }
 
+    public function getMessages(ChatService $chatService)
+    {
+        $messages = $chatService->get();
+        return response(['messages'=>$messages]);
+    }
+
     public function store(ChatRequest $request, ChatService $chatService)
     {
         $data = $request->all();

@@ -24,4 +24,6 @@ Route::post('/login', [LoginController::class,'login'])->middleware('web')->name
 Route::get('/logout', [LoginController::class,'logout'])->middleware('web')->name('logout');
 Route::post('/users/create/store', [UserController::class,'store'])->middleware('web')->name('usersStore');
 Route::get('/chat',[ChatController::class,'show'])->name('chat');
-Route::post('message/save', [ChatController::class,'store'])->name('messageStore');
+Route::post('/message/save', [ChatController::class,'store'])->name('messageStore');
+//Route::post('/messages/get', [ChatController::class, 'getMessage'])->name('getMessages');
+
