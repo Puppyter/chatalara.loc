@@ -6,14 +6,15 @@ use App\Models\Message;
 
 class MessageRepository
 {
-    public function create($data)
+    public function create(array $data)
     {
         return Message::create($data);
     }
 
-    public function get()
+    public function get(?string $time)
     {
-        return Message::latest()->paginate(20);
+        return empty($time)
+            ? Message::latest()->limit(20)->get()
+            : Message::where('created_at', '>=', $time)->latest()->get();
     }
-
 }

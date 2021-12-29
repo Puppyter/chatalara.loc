@@ -1,4 +1,11 @@
 @extends('layouts.layout')
 @section('content')
-        <Chat :messages={{json_encode($messages)}}></Chat>
+    <div class="row row-cols-10">
+        <div class="col-2" style="height: 100%">
+            <Users></Users>
+        </div>
+        <div class="col-8">
+            <Chat></Chat>
+        </div>
+    </div>
 @endsection

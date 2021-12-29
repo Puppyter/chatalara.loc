@@ -18,13 +18,21 @@ class ChatService
         return $this->messageRepository->create($data);
     }
 
-    public function get()
+    public function get(?string $time)
     {
-        $messages = $this->messageRepository->get()->items();
-        foreach ($messages as $message)
-        {
-            $message['name'] = $message->user->name;
-        }
-        return $messages;
+         $time == 'null'
+            ? $messages = $this->messageRepository->get(null)
+            : $messages = $this->messageRepository->get($time);
+         foreach ($messages as $message)
+         {
+             $message->name = $message->user->name;
+             unset($message->user);
+         }
+         return $messages;
+    }
+
+    public function setTime()
+    {
+        return date('Y-m-d H:i:s', strtotime('-5 second'));
     }
 }

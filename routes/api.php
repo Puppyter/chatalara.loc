@@ -19,4 +19,4 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::get('/message/get', [ChatController::class, 'getMessage'])->name('getMessages');
+//Route::get('/message/get', [ChatController::class, 'getMessage'])->name('getMessages');

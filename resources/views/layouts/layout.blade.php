@@ -33,7 +33,7 @@
         @endif
     </div>
 @show
-<div class="container" id="app" style="margin-top: 1em; height: 100%; width: 100%">
+<div class="container-fluid" id="app" style="margin-top: 1em; height: 100%; width: 100%">
     @yield("content")
 </div>
 <script src="{{ mix("js/app.js") }}" defer></script>

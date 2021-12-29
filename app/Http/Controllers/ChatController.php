@@ -9,17 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
-    public function show(ChatService $chatService)
+    public function show()
     {
-        $messages = $chatService->get();
-        return response()->view('chat', ['messages'=>$messages]);
+        return response()->view('chat');
     }
 
-    public function getMessages(ChatService $chatService)
+    public function getMessages(Request $request,ChatService $chatService)
     {
-        $messages = $chatService->get();
-        return response(['messages'=>$messages]);
+        return response(['messages'=>$chatService->get($request->time), 'time'=>$chatService->setTime()]);
     }
+
 
     public function store(ChatRequest $request, ChatService $chatService)
     {

@@ -1,17 +1,20 @@
 <template>
     <form id="messageForm">
         <div ref="scroll" class="row border position-relative" style="overflow:auto; width: 100%; height: 54em">
-            <div class="border" v-for="message in messages.slice().reverse()" style="margin-top: 1px; margin-bottom: 1px">
+            <div class="border bg-light bg-gradient"
+                 v-for="message in messages.slice().reverse()" v-model="messages"
+                 style="height: 5em; margin-top: 1px; margin-bottom: 1px"
+            >
                 <figure class="text-end">
                     <blockquote class="blockquote">
                            <span>
                                <h6>{{message.name}}</h6>
-                               <h5> {{message.message}}</h5>
+                               <h5 class="text-break"> {{message.message}}</h5>
                            </span>
                     </blockquote>
                 </figure>
             </div>
-        </div>
+            </div>
         <div class="input-group">
                 <textarea class="form-control" style="height: 4em" v-model="msg" aria-describedby="button-addon2"></textarea>
                 <button class="btn btn-primary" v-if="msg!==''" @click="sendMessage" type="button" id="button-addon2">Button</button>
@@ -25,17 +28,16 @@
 
 export default {
     name: "Chat",
-    props: ['messages'],
     data: () => ({
         msg: '',
-        page: 1,
+        messages: [],
+        time: null,
     }),
     mounted() {
-            const div = this.$refs.scroll;
-            div.scrollTop = div.scrollHeight;
-        setInterval(function(){
-            window.location.reload(true);
-        },5000)
+        this.getMessages();
+        this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight;
+        setInterval(this.getMessages,5000)
+
     },
     methods: {
         sendMessage() {
@@ -48,30 +50,37 @@ export default {
             })
                 .then(({data}) => {
                     console.log(data)
-                    if (data.status === true)
-                    {
-                        window.location.reload(true);
+                    if (data.status === true) {
+                        this.getMessages();
+
                     }
+
                 })
-                .catch(error =>{
+                .catch(error => {
                     console.log(error.response)
                 })
+                .finally(() => {
+                    this.msg = '';
+                    this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight;
+                })
         },
-        // infiniteHandler($state) {
-        //     axios.get('/message/get', {
-        //         params: {
-        //             page: this.page,
-        //         },
-        //     }).then(({data}) => {
-        //         if (data.messages.length) {
-        //             this.page += 1;
-        //             this.messages.push(...data.messages);
-        //             $state.loaded();
-        //         } else {
-        //             $state.complete();
-        //         }
-        //     });
-        // },
+        getMessages() {
+            axios.get('/message/get'+'?'+ 'time='+this.time, {
+                timeout: 5000
+            }).then(({data}) => {
+                data.messages.forEach(message => {
+                    const found = this.messages.find(msg => msg.id === message.id);
+                    if (!found) {
+                        this.messages.unshift(message);
+                    }
+                });
+                this.time = data.time;
+                console.log(data)
+            })
+                .catch(error => {
+                    console.log(error.response);
+                });
+        },
     }
 }
 </script>
