@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\IndexController::class,'index'])->name('welcome');
+Route::get('/', [\App\Http\Controllers\UserController::class,'index'])->name('welcome');
 
 Route::resource('users', UserController::class)->middleware('web');
 Route::post('/login', [LoginController::class,'login'])->middleware('web')->name('login');
@@ -27,4 +28,6 @@ Route::get('/chat',[ChatController::class,'show'])->name('chat');
 Route::post('/message/save', [ChatController::class,'store'])->name('messageStore');
 Route::get('/message/get', [ChatController::class, 'getMessages'])->name('getMessages');
 Route::get('/message/first', [ChatController::class,'getFirst'])->name('messagesFirst');
+Route::post('users/change', [ActivityController::class,"changeActivity"])->name('changeActivity');
+Route::get('/user/active', [ActivityController::class,'getAllActiveUsers'])->name('allActive');
 

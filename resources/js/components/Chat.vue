@@ -18,7 +18,7 @@
         <div class="input-group">
                 <textarea class="form-control" style="height: 4em" v-model="msg" aria-describedby="button-addon2"></textarea>
                 <button class="btn btn-primary" v-if="msg!==''" @click="sendMessage" type="button" id="button-addon2">Button</button>
-                <button class="btn btn-primary" disabled v-if="msg===''" @click="sendMessage" type="button">Button</button>
+                <button class="btn btn-primary" disabled v-if="msg===''" type="button">Button</button>
         </div>
     </form>
 </template>
@@ -32,6 +32,7 @@ export default {
         msg: '',
         messages: [],
         time: null,
+        activity: true,
     }),
     mounted() {
         this.getMessages();
@@ -52,7 +53,6 @@ export default {
                     console.log(data)
                     if (data.status === true) {
                         this.getMessages();
-
                     }
 
                 })
@@ -81,6 +81,14 @@ export default {
                     console.log(error.response);
                 });
         },
+        changeActivity(){
+            this.activity=!this.activity;
+            axios.post('/users/change', [{'activity': this.activity}])
+            .then(({data})=>{
+                console.log(data)
+            })
+
+        }
     }
 }
 </script>

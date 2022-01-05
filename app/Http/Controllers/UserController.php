@@ -51,7 +51,7 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(UserRequest $userRequest, UserService $userService)
+    public function show(UserService $userService)
     {
 //
     }

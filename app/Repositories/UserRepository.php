@@ -16,4 +16,13 @@ class UserRepository
         return User::find($userId);
     }
 
+    public function getAllActive()
+    {
+        return User::where('last_activity','>',now()->subMinutes(15))->get(['name','avatar']);
+    }
+
+    public function update(int $userId, array $data)
+    {
+        return User::find($userId)->update($data);
+    }
 }

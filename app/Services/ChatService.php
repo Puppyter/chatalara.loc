@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\MessageRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
 
 class ChatService
 {
@@ -15,6 +17,11 @@ class ChatService
 
     public function save($data)
     {
+        /** @var ActivityService $activityService */
+        /** @var UserRepository $user */
+        $user = app(UserRepository::class);
+        $activityService = app(ActivityService::class);
+        $activityService->changeLastActivity(Auth::id());
         return $this->messageRepository->create($data);
     }
 
@@ -23,8 +30,7 @@ class ChatService
          $time == 'null'
             ? $messages = $this->messageRepository->get(null)
             : $messages = $this->messageRepository->get($time);
-         foreach ($messages as $message)
-         {
+         foreach ($messages as $message) {
              $message->name = $message->user->name;
              unset($message->user);
          }

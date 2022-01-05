@@ -1,17 +1,14 @@
 @extends('layouts.layout')
 @section('upper')
-    <div class="container-lg form-floating">
-    <div class="row">
+    <div class="row shadow p-3 mb-3 bg-body rounded border justify-content-md-center">
         <div class="col">
-            <a href="/" class="h4 text-black-50 form-control">ChataLara</a>
+            <a class="fs-5 btn btn-dark" href="/">CHATALARA</a>
+
         </div>
-        <div class="col-md-auto">
-            <h4 class="form-control">Login</h4>
-        </div>
-        <div class="col col-lg-2">
+        <div class="col-2">
+            <a class="btn btn-primary" href="{{route('users.index')}}">Login</a>
             <a href="{{route('users.create')}}">Register</a>
         </div>
-    </div>
     </div>
 @endsection
 @section('content')

@@ -5274,7 +5274,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       msg: '',
       messages: [],
-      time: null
+      time: null,
+      activity: true
     };
   },
   mounted: function mounted() {
@@ -5326,6 +5327,15 @@ __webpack_require__.r(__webpack_exports__);
         console.log(data);
       })["catch"](function (error) {
         console.log(error.response);
+      });
+    },
+    changeActivity: function changeActivity() {
+      this.activity = !this.activity;
+      axios.post('/users/change', [{
+        'activity': this.activity
+      }]).then(function (_ref3) {
+        var data = _ref3.data;
+        console.log(data);
       });
     }
   }
@@ -5523,12 +5533,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Users",
   data: function data() {
     return {
       users: []
     };
+  },
+  mounted: function mounted() {
+    this.getActiveUsers();
+    setInterval(this.getActiveUsers, 5000);
+  },
+  methods: {
+    getActiveUsers: function getActiveUsers() {
+      var _this = this;
+
+      axios.get('/user/active').then(function (response) {
+        _this.users = response.data.users;
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    }
   }
 });
 
@@ -28543,7 +28586,6 @@ var render = function () {
             {
               staticClass: "btn btn-primary",
               attrs: { disabled: "", type: "button" },
-              on: { click: _vm.sendMessage },
             },
             [_vm._v("Button")]
           )
@@ -28841,7 +28883,57 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "div",
+    { staticClass: "border", staticStyle: { height: "100%" } },
+    [
+      _c("h3", [_vm._v("Active Users")]),
+      _vm._v(" "),
+      _vm._l(_vm.users, function (user) {
+        return _c(
+          "div",
+          {
+            staticStyle: {
+              height: "auto",
+              "margin-top": "1px",
+              "margin-bottom": "1px",
+            },
+            model: {
+              value: _vm.users,
+              callback: function ($$v) {
+                _vm.users = $$v
+              },
+              expression: "users",
+            },
+          },
+          [
+            _c("div", { staticClass: "card mb-3" }, [
+              _c("div", { staticClass: "row g-0" }, [
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c("img", {
+                    staticClass: "border img-fluid",
+                    staticStyle: {
+                      "border-radius": "50%",
+                      width: "6em",
+                      height: "6em",
+                    },
+                    attrs: { src: user.avatar, alt: "..." },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-8" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("h4", [_vm._v(_vm._s(user.name))]),
+                  ]),
+                ]),
+              ]),
+            ]),
+          ]
+        )
+      }),
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
