@@ -28,8 +28,8 @@ class CreateUsers1Table extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('active')->default(false);
             $table->dropIndex('last_activity');
+            $table->boolean('active')->default(false);
         });
     }
 }

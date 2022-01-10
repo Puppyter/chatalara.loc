@@ -18,7 +18,8 @@ class Message extends Model
 
     protected $fillable = [
         'user_id',
-        'message'
+        'message',
+        'recipient_id'
     ];
 
     protected static function boot()

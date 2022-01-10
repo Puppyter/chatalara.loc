@@ -5268,20 +5268,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Chat",
+  props: ['recipient'],
   data: function data() {
     return {
       msg: '',
       messages: [],
-      time: null,
-      activity: true
+      time: '',
+      recipientId: null
     };
   },
   mounted: function mounted() {
-    this.getMessages();
-    this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight;
+    this.getMessages(); // this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight;
+
     setInterval(this.getMessages, 5000);
+  },
+  computed: {
+    changeRecipient: function changeRecipient() {
+      this.recipientId = this.recipient.id;
+      this.msg = this.recipient.name;
+    }
   },
   methods: {
     sendMessage: function sendMessage() {
@@ -5289,6 +5297,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var data = new FormData(document.getElementById('messageForm'));
       data.append('message', this.msg);
+      data.append('recipient_id', this.recipientId);
       axios.post('/message/save', data, {
         headers: {
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -5320,7 +5329,13 @@ __webpack_require__.r(__webpack_exports__);
           });
 
           if (!found) {
-            _this2.messages.unshift(message);
+            if (_this2.time === '') {
+              _this2.messages.push(message);
+
+              _this2.scrollDown();
+            } else {
+              _this2.messages.unshift(message);
+            }
           }
         });
         _this2.time = data.time;
@@ -5337,6 +5352,16 @@ __webpack_require__.r(__webpack_exports__);
         var data = _ref3.data;
         console.log(data);
       });
+    },
+    changeUser: function changeUser() {
+      if (this.msg !== undefined) {
+        this.msg = undefined;
+      }
+
+      this.msg = this.recipient.name;
+    },
+    scrollDown: function scrollDown() {
+      this.$refs.scroll.scrollTop = this.$refs.scroll.scrollHeight;
     }
   }
 });
@@ -5550,11 +5575,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Users",
   data: function data() {
     return {
-      users: []
+      users: [],
+      recipient: {
+        id: null,
+        name: ''
+      }
     };
   },
   mounted: function mounted() {
@@ -5571,6 +5607,9 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    changeUser: function changeUser(recipient) {
+      this.recipient = recipient;
     }
   }
 });
@@ -28505,7 +28544,7 @@ var render = function () {
       "div",
       {
         ref: "scroll",
-        staticClass: "row border position-relative",
+        staticClass: "border position-relative",
         staticStyle: { overflow: "auto", width: "100%", height: "54em" },
       },
       _vm._l(_vm.messages.slice().reverse(), function (message) {
@@ -28545,6 +28584,29 @@ var render = function () {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "input-group" }, [
+      this.recipient !== {}
+        ? _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.changeRecipient,
+                expression: "changeRecipient",
+              },
+            ],
+            attrs: { type: "hidden" },
+            domProps: { value: _vm.changeRecipient },
+            on: {
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.changeRecipient = $event.target.value
+              },
+            },
+          })
+        : _vm._e(),
+      _vm._v(" "),
       _c("textarea", {
         directives: [
           {
@@ -28573,7 +28635,7 @@ var render = function () {
             "button",
             {
               staticClass: "btn btn-primary",
-              attrs: { type: "button", id: "button-addon2" },
+              attrs: { type: "button" },
               on: { click: _vm.sendMessage },
             },
             [_vm._v("Button")]
@@ -28883,57 +28945,81 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "border", staticStyle: { height: "100%" } },
-    [
-      _c("h3", [_vm._v("Active Users")]),
-      _vm._v(" "),
-      _vm._l(_vm.users, function (user) {
-        return _c(
-          "div",
-          {
-            staticStyle: {
-              height: "auto",
-              "margin-top": "1px",
-              "margin-bottom": "1px",
-            },
-            model: {
-              value: _vm.users,
-              callback: function ($$v) {
-                _vm.users = $$v
+  return _c("div", { staticClass: "row row-cols-10" }, [
+    _c("div", { staticClass: "col-2", staticStyle: { height: "auto" } }, [
+      _c(
+        "div",
+        { staticClass: "border", staticStyle: { height: "100%" } },
+        [
+          _c("h3", [_vm._v("Active Users")]),
+          _vm._v(" "),
+          _vm._l(_vm.users, function (user) {
+            return _c(
+              "div",
+              {
+                key: user.id,
+                staticStyle: {
+                  height: "auto",
+                  "margin-top": "1px",
+                  "margin-bottom": "1px",
+                },
+                model: {
+                  value: _vm.users,
+                  callback: function ($$v) {
+                    _vm.users = $$v
+                  },
+                  expression: "users",
+                },
               },
-              expression: "users",
-            },
-          },
-          [
-            _c("div", { staticClass: "card mb-3" }, [
-              _c("div", { staticClass: "row g-0" }, [
-                _c("div", { staticClass: "col-md-4" }, [
-                  _c("img", {
-                    staticClass: "border img-fluid",
-                    staticStyle: {
-                      "border-radius": "50%",
-                      width: "6em",
-                      height: "6em",
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "card mb-3",
+                    staticStyle: { width: "90%" },
+                    on: {
+                      click: function ($event) {
+                        return _vm.changeUser({ id: user.id, name: user.name })
+                      },
                     },
-                    attrs: { src: user.avatar, alt: "..." },
-                  }),
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-8" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("h4", [_vm._v(_vm._s(user.name))]),
-                  ]),
-                ]),
-              ]),
-            ]),
-          ]
-        )
-      }),
-    ],
-    2
-  )
+                  },
+                  [
+                    _c("div", { staticClass: "row g-0" }, [
+                      _c("div", { staticClass: "col-md-auto" }, [
+                        _c("img", {
+                          staticClass: "border img-fluid",
+                          staticStyle: {
+                            "border-radius": "50%",
+                            width: "5em",
+                            height: "5em",
+                          },
+                          attrs: { src: user.avatar, alt: "..." },
+                        }),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-auto" }, [
+                        _c("div", { staticClass: "card-body" }, [
+                          _c("h4", [_vm._v(_vm._s(user.name))]),
+                        ]),
+                      ]),
+                    ]),
+                  ]
+                ),
+              ]
+            )
+          }),
+        ],
+        2
+      ),
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "col-8" },
+      [_c("Chat", { attrs: { recipient: this.recipient } })],
+      1
+    ),
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

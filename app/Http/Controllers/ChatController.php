@@ -16,7 +16,7 @@ class ChatController extends Controller
 
     public function getMessages(Request $request,ChatService $chatService)
     {
-        return response(['messages'=>$chatService->get($request->time), 'time'=>$chatService->setTime()]);
+        return response(['messages'=>$chatService->getMessages($request->time), 'time'=>$chatService->setTime()]);
     }
 
 
@@ -24,6 +24,9 @@ class ChatController extends Controller
     {
         $data = $request->all();
         $data["user_id"] = Auth::id();
+        if ($data['recipient_id']=='null') {
+            $data['recipient_id']=0;
+        }
         $chatService->save($data);
         return response(['status'=>true]);
     }

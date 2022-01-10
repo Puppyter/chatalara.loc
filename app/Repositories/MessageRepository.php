@@ -11,10 +11,31 @@ class MessageRepository
         return Message::create($data);
     }
 
-    public function get(?string $time)
+    public function getPrivateMessages(?string $time, int $userId)
     {
         return empty($time)
-            ? Message::latest()->limit(20)->get()
-            : Message::where('created_at', '>=', $time)->latest()->get();
+            ?Message::whereIn('recipient_id', [0, $userId])
+                ->limit(20)
+                ->latest()
+                ->get()
+            :Message::where('created_at', '>=', $time)
+                ->whereIn('recipient_id',[0,$userId])
+                ->latest()
+                ->get();
+    }
+
+    public function getPublicMessages(?string $time, int $userId)
+    {
+        return empty($time)
+            ?Message::where('user_id',$userId)
+                ->whereNotNull('recipient_id')
+                ->latest()
+                ->limit(20)
+                ->get()
+            :Message::where('created_at', '>=', $time)
+                ->where('user_id',$userId)
+                ->whereNotNull('recipient_id')
+                ->latest()
+                ->get() ;
     }
 }
